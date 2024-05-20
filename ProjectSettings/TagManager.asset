@@ -11,6 +11,8 @@ TagManager:
   - Ham
   - Cabbage
   - Tortilla
+  - Ground
+  - DeathZone
   layers:
   - Default
   - TransparentFX
