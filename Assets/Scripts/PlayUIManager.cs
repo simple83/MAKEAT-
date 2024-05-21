@@ -46,27 +46,31 @@ public class PlayUIManager : MonoBehaviour
     public Sprite[] ingrediantSpriteArray = new Sprite[7];
     public Image[] InventoryUI;
     private int index = 0;
+    private int[] ingreds = new int[3];
 
     public void getIngrediant(Ingrediants ingred)
     {
         if (index < 3)
         {
-            InventoryUI[index].sprite = ingrediantSpriteArray[(int)ingred];
+            ingreds[index] = (int)ingred;
+            InventoryUI[index].sprite = ingrediantSpriteArray[ingreds[index]];
+            GameManager.instance.ingredCount[ingreds[index]]++;
             index++;
             Debug.Log(index);
         }
         else
         {
             Debug.Log("인벤토리가 가득 찼습니다.");
-            index = 2;
+            index = 3;
         }
 
     }
     public void throwIngrediant()
     {
-        if(index > 0 && index < 3)
+        if(index > 0 && index < 4)
         {
             index--;
+            GameManager.instance.ingredCount[ingreds[index]]--;
             InventoryUI[index].sprite = ingrediantSpriteArray[0];
         }
         else if (index <= 0)
@@ -80,4 +84,28 @@ public class PlayUIManager : MonoBehaviour
         }
     }
 
+    public void MakeFood()
+    {
+        if(index < 3)
+        {
+            Debug.Log("재료가 부족합니다.");
+        }
+        else if(index == 3)
+        {
+            if (GameManager.instance.ingredCount[1] > 0 && GameManager.instance.ingredCount[2] > 0 && GameManager.instance.ingredCount[5] > 0)
+            {
+                Debug.Log("샌드위치 제작 시작");
+                StartCoroutine("MakeSandwich");
+            }
+        }
+    }
+    IEnumerator MakeSandwich()
+    {
+        yield return new WaitForSeconds(5f);
+        GameManager.instance.ingredCount[1]--;
+        GameManager.instance.ingredCount[2]--;
+        GameManager.instance.ingredCount[5]--;
+        Debug.Log("샌드위치 제작 완료");
+        //음식 인벤토리 추가 필요
+    }
 }

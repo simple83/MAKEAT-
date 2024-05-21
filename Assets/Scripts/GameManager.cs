@@ -25,7 +25,8 @@ public class GameManager : MonoBehaviour
         }
     }
     public bool isGameRunning = true;
-    public float runningTime = 0f;
+    public float runningTime = 0f; //게임 진행 시간
+    public int[] ingredCount = {0,0,0,0,0,0,0};//0번은 비워두고, 1부터 빵
     private void Awake()
     {
         if (instance == null)
