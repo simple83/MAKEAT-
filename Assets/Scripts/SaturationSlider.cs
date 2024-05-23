@@ -21,10 +21,10 @@ public class SaturationSlider : MonoBehaviour
                 saturationSlider.value = saturationSlider.value - 10f * deltatime; //60초 이후 고정
             }
             //게임종료
-            if(saturationSlider.value == 0)
+            if(saturationSlider.value <= 0)
             {
-                GameManager.instance.isGameRunning = false;
                 saturationSlider.value = 100f;
+                GameManager.instance.GameOver();
             }
         }
     }

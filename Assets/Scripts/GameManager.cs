@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
-    public bool isGameRunning = true;
+    public bool isGameRunning = false;
     public float runningTime = 0f; //게임 진행 시간
     public int[] ingredCount = {0,0,0,0,0,0,0};//0번은 비워두고, 1부터 빵
     private void Awake()
@@ -38,5 +39,25 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(this);
+    }
+    public void GameStart()
+    {
+        isGameRunning = true;
+        runningTime = 0;
+        for (int i = 0; i < ingredCount.Length; i++)
+        {
+            ingredCount[i] = 0;
+        }
+        SceneManager.LoadScene(1);
+    }
+    public void GameOver()
+    {
+        isGameRunning = false;
+        runningTime = 0;
+        for (int i = 0; i < ingredCount.Length; i++)
+        {
+            ingredCount[i] = 0;
+        }
+        SceneManager.LoadScene(2);
     }
 }

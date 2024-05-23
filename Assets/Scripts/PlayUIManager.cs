@@ -43,10 +43,20 @@ public class PlayUIManager : MonoBehaviour
         Cabage = 5,
         Tortilla = 6
     }
+    public enum Foods
+    {
+        Empty = 0,
+        Sandwich = 1,
+        Hamburger = 2,
+        Pizza = 3
+    }
     public Sprite[] ingrediantSpriteArray = new Sprite[7];
+    public Sprite[] foodsSpriteArray = new Sprite[4];
     public Image[] InventoryUI;
+    public Image currentFoodUI;
     private int index = 0;
     private int[] ingreds = new int[3];
+    private Foods currentfood = 0;
 
     public void getIngrediant(Ingrediants ingred)
     {
@@ -97,6 +107,16 @@ public class PlayUIManager : MonoBehaviour
                 Debug.Log("샌드위치 제작 시작");
                 StartCoroutine("MakeSandwich");
             }
+            else if (GameManager.instance.ingredCount[1] > 0 && GameManager.instance.ingredCount[3] > 0 && GameManager.instance.ingredCount[4] > 0)
+            {
+                Debug.Log("햄버거 제작 시작");
+                StartCoroutine("MakeHamburger");
+            }
+            else if (GameManager.instance.ingredCount[2] > 0 && GameManager.instance.ingredCount[3] > 0 && GameManager.instance.ingredCount[6] > 0)
+            {
+                Debug.Log("피자 제작 시작");
+                StartCoroutine("MakePizza");
+            }
         }
     }
     IEnumerator MakeSandwich()
@@ -106,6 +126,27 @@ public class PlayUIManager : MonoBehaviour
         GameManager.instance.ingredCount[2]--;
         GameManager.instance.ingredCount[5]--;
         Debug.Log("샌드위치 제작 완료");
-        //음식 인벤토리 추가 필요
+        currentfood = Foods.Sandwich;
+        currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Sandwich];
+    }
+    IEnumerator MakeHamburger()
+    {
+        yield return new WaitForSeconds(5f);
+        GameManager.instance.ingredCount[1]--;
+        GameManager.instance.ingredCount[3]--;
+        GameManager.instance.ingredCount[4]--;
+        Debug.Log("햄버거 제작 완료");
+        currentfood = Foods.Hamburger;
+        currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Hamburger];
+    }
+    IEnumerator MakePizza()
+    {
+        yield return new WaitForSeconds(5f);
+        GameManager.instance.ingredCount[2]--;
+        GameManager.instance.ingredCount[3]--;
+        GameManager.instance.ingredCount[6]--;
+        Debug.Log("피자 제작 완료");
+        currentfood = Foods.Pizza;
+        currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Pizza];
     }
 }

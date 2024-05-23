@@ -5,8 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class TitleUIManager : MonoBehaviour
 {
-  void GameStartBtn()
+    public void GameStartBtn()
     {
-        SceneManager.LoadScene(1);
+         GameManager.instance.GameStart();
+    }
+
+    public void GoTitleBtn()
+    {
+        SceneManager.LoadScene(0);
     }
 }
