@@ -17,7 +17,7 @@ public class PlayUIManager : MonoBehaviour
                 if (instance == null)
                 {
                     Debug.Log("No Singletone instance");
-                    Debug.Log("이거 나오면 망한거지 뭐...");
+                    Debug.Log("이거 나오면 망한거지 뭐... ㅋㅋ웃기네요-창현");
                 }
             }
             return instance;
@@ -54,7 +54,7 @@ public class PlayUIManager : MonoBehaviour
     public Sprite[] foodsSpriteArray = new Sprite[4];
     public Image[] InventoryUI;
     public Image currentFoodUI;
-    private int index = 0;
+    private int index = 0; //지닌 재료 수
     private int[] ingreds = new int[3];
     private Foods currentfood = 0;
 

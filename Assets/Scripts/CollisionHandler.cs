@@ -15,25 +15,31 @@ public class CollisionHandler : MonoBehaviour
         if (other.CompareTag("Bread"))
         {
             isfood = true;
+            Debug.Log("Bread 접촉");
         }
         else if (other.CompareTag("Tomato")) {
             isfood = true;
+            Debug.Log("Tomato 접촉");
         }
         else if (other.CompareTag("Cheese"))
         {
             isfood = true;
+            Debug.Log("Cheese 접촉");
         }
         else if (other.CompareTag("Ham"))
         {
             isfood = true;
+            Debug.Log("Ham 접촉");
         }
         else if (other.CompareTag("Cabbage"))
         {
             isfood = true;
+            Debug.Log("Cabbage 접촉");
         }
         else if (other.CompareTag("Tortilla"))
         {
             isfood = true;
+            Debug.Log("Tortilla 접촉");
         }
 
         if (isfood)
