@@ -1142,6 +1142,10 @@ MonoBehaviour:
   - {fileID: 1234664264}
   - {fileID: 337969094}
   currentFoodUI: {fileID: 0}
+  inventoryingredCount: 
+  mapIngredCount: 
+  castednumber: 0
+  castingTime: 0
 --- !u!4 &530914161
 Transform:
   m_ObjectHideFlags: 0
@@ -2598,7 +2602,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isGameRunning: 1
   runningTime: 0
-  ingredCount: 00000000000000000000000000000000000000000000000000000000
+  inventoryIngredCount: 00000000000000000000000000000000000000000000000000000000
+  mapIngredCount: 00000000000000000000000000000000000000000000000000000000
+  castednumber: 0
+  castingTime: 5
+  isCasting: 0
 --- !u!4 &1952095182
 Transform:
   m_ObjectHideFlags: 0
@@ -3227,11 +3235,11 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1952095182}
   - {fileID: 519420032}
   - {fileID: 920038158610022010}
   - {fileID: 1288999919}
   - {fileID: 882499905}
-  - {fileID: 1952095182}
   - {fileID: 811153077426641707}
   - {fileID: 530914161}
   - {fileID: 195897490106669609}

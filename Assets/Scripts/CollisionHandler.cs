@@ -62,7 +62,7 @@ public class CollisionHandler : MonoBehaviour
 
     public void PickupItem()
     {
-        if (currentFood != null)
+        if (currentFood != null && GameManager.instance.isCasting == false)
         {
             Debug.Log(currentFood.tag + " 획득");
             if(currentFood.tag == "Bread")
@@ -71,7 +71,7 @@ public class CollisionHandler : MonoBehaviour
             }
             else if (currentFood.tag == "Tomato")
             {
-
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Tomato);
             }
             else if (currentFood.tag == "Cheese")
             {
@@ -79,15 +79,15 @@ public class CollisionHandler : MonoBehaviour
             }
             else if (currentFood.tag == "Ham")
             {
-
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Ham);
             }
             else if (currentFood.tag == "Cabbage")
             {
-
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Cabbage);
             }
             else if (currentFood.tag == "Tortilla")
             {
-
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Tortilla);
             }
             Destroy(currentFood);
             pickupButton.gameObject.SetActive(false);

@@ -11,16 +11,19 @@ public class PlayerController : MonoBehaviour
     public bool isMovingRight = false;//플레이어가 오른쪽 이동중인지 체크
     void Update()
     {
-        if(isMovingLeft)
-        {
-            // 왼쪽으로 이동
-            transform.Translate(Vector3.left * playerMoveSpeed * Time.deltaTime);
-        }
+        if (GameManager.instance.isCasting == false) 
+        {//음식 제작 도중엔 이동 불가능
+            if (isMovingLeft)
+            {
+                // 왼쪽으로 이동
+                transform.Translate(Vector3.left * playerMoveSpeed * Time.deltaTime);
+            }
 
-        if (isMovingRight)
-        {
-            // 오른쪽으로 이동
-            transform.Translate(Vector3.right * playerMoveSpeed * Time.deltaTime);
+            if (isMovingRight)
+            {
+                // 오른쪽으로 이동
+                transform.Translate(Vector3.right * playerMoveSpeed * Time.deltaTime);
+            }
         }
         saturationSlider.transform.position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 1.5f, 0));
         //포만감 슬라이더가 플레이어를 따라가도록.

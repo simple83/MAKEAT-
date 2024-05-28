@@ -28,7 +28,11 @@ public class GameManager : MonoBehaviour
     }
     public bool isGameRunning = false; //게임 플레이 중 인지 체크
     public float runningTime = 0f; //게임 진행 시간
-    public int[] ingredCount = {0,0,0,0,0,0,0};//0번은 비워두고, 1부터 빵. 재료 갯수 카운터
+    public int[] inventoryIngredCount = { 0, 0, 0, 0, 0, 0, 0 };//0번은 비워두고, 1부터 빵. 인벤토리 재료 갯수 카운터
+    public int[] mapIngredCount       = { 0, 0, 0, 0, 0, 0, 0 };// 맵에 존재하는 재료 카운터
+    public int castednumber = 0; // 음식이 제작된 횟수
+    public float castingTime = 5f; // 캐스팅 시간
+    public bool isCasting = false;
     private void Awake()
     {
         if (instance == null)
@@ -46,9 +50,10 @@ public class GameManager : MonoBehaviour
     {
         isGameRunning = true; //게임 시작여부 플래그 true
         runningTime = 0; //게임 진행시간 초기화
-        for (int i = 0; i < ingredCount.Length; i++)
+        for (int i = 0; i < inventoryIngredCount.Length; i++)
         {
-            ingredCount[i] = 0; // 재료 카운터 배열 초기화
+            inventoryIngredCount[i] = 0; // 재료 카운터 배열 초기화
+            mapIngredCount[i] = 0; // 맵에 배치된 재료 카운터 배열 초기화
         }
         SceneManager.LoadScene(1); //게임 시작씬으로 넘어가기 (Build setting 가면 씬 번호 있음)
     }
@@ -56,9 +61,10 @@ public class GameManager : MonoBehaviour
     {
         isGameRunning = false; //게임 진행 플래그 false
         runningTime = 0; //진행시간 초기화
-        for (int i = 0; i < ingredCount.Length; i++)
+        for (int i = 0; i < inventoryIngredCount.Length; i++)
         {
-            ingredCount[i] = 0; // 재료 갯수 카운터 초기화
+            inventoryIngredCount[i] = 0; // 재료 갯수 카운터 초기화
+            mapIngredCount[i] = 0; // 맵에 배치된 재료 카운터 배열 초기화
         }
         SceneManager.LoadScene(2); //게임오버 씬으로 전환
     }

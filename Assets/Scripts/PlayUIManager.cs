@@ -36,6 +36,7 @@ public class PlayUIManager : MonoBehaviour
         }
         /*중복 생성 방지. GameManager는 모든 씬을 관리하지만, PlayUIManager는 Play 씬만 관리하므로 
         새로운 씬 로딩시 PlayUIManager 파괴되도록 DonotDestroyOnLoad 안씁니다.*/
+        StartCoroutine("WaitForGameManager"); // 게임매니저 생성 대기 후 필요한 참조를 복사해옵니다.
     }
     public enum Ingrediants //재료 열거형 자료. 코드 가독성 향상용.
     {
@@ -43,7 +44,7 @@ public class PlayUIManager : MonoBehaviour
         Tomato = 2,
         Cheese = 3,
         Ham = 4,
-        Cabage = 5,
+        Cabbage = 5,
         Tortilla = 6
     }
     public enum Foods //음식 열거형 자료. 코드 가독성 향상용
@@ -53,106 +54,192 @@ public class PlayUIManager : MonoBehaviour
         Hamburger = 2,
         Pizza = 3
     }
-    public Sprite[] ingrediantSpriteArray = new Sprite[7]; //재료 이미지 미리 로딩해두는 배열
-    public Sprite[] foodsSpriteArray = new Sprite[4]; //음식 이미지 미리 로딩해두는 배열
-    public Image[] InventoryUI; //재료 인벤토리 3개 UI 이미지 접근용
-    public Image currentFoodUI; // 음식 인벤토리 UI 이미지 접근용
-    private int index = 0; //지닌 재료 수
-    private int[] ingreds = new int[3]; //현재 가진 재료 저장용 배열
-    private Foods currentfood = 0; //현재 가진 음식 저장용 배열
+    public Sprite[] ingrediantSpriteArray = new Sprite[7];
+    //재료 이미지 미리 로딩해두는 배열
+
+    public Sprite[] foodsSpriteArray = new Sprite[4];
+    //음식 이미지 미리 로딩해두는 배열
+
+    public Image[] InventoryUI;
+    //재료 인벤토리 3개 UI 이미지 접근용
+
+    public Image currentFoodUI;
+    // 음식 인벤토리 UI 이미지 접근용
+
+    public int[] inventoryingredCount;
+    //인벤토리 재료 갯수 카운터. GameManager에 선언된 배열의 참조를 복사해와서 사용합니다.
+
+    public int[] mapIngredCount;
+    //맵 재료 갯수 카운터. GameManager에 선언된 배열의 참조를 복사해와서 사용합니다.
+
+    public int castednumber;
+    //음식 제작된 횟수. GameManager에 선언된 변수의 참조를 복사해와서 사용합니다.
+
+    public float castingTime;
+    //캐스팅 시간.  GameManager에 선언된 변수의 참조를 복사해와서 사용합니다.
+
+
+    private int index = 0;
+    //지닌 재료 수.
+
+    private int[] ingreds = new int[3];
+    //현재 가진 재료 저장용 배열
+
+    private Foods currentfood = 0;
+    //현재 가진 음식 저장용 배열
+
 
     public void getIngrediant(Ingrediants ingred) 
     //재료획득 버튼 누를 시 실행되는 함수.
     {
-        if (index < 3)//인벤토리가 꽉차지 않았을때. (0,1,2에 재료가 들어감.)
+        if (GameManager.instance.isCasting == false) //음식 제작중엔 안됨
         {
-            ingreds[index] = (int)ingred; //획득한 재료 인벤토리에 추가
-            InventoryUI[index].sprite = ingrediantSpriteArray[ingreds[index]]; //인벤토리 UI 이미지도 변경
-            GameManager.instance.ingredCount[ingreds[index]]++; //GamaManager에 재료 카운터에 정보전달
-            index++;//인벤토리 인덱스 1 증가
-            Debug.Log(index);
-        }
-        else
-        {
-            Debug.Log("인벤토리가 가득 찼습니다.");
-            index = 3;//인덱스 오류 발생 방지용
+            if (index < 3)//인벤토리가 꽉차지 않았을때. (0,1,2에 재료가 들어감.)
+            {
+                ingreds[index] = (int)ingred; //획득한 재료 인벤토리에 추가
+                InventoryUI[index].sprite = ingrediantSpriteArray[ingreds[index]]; //인벤토리 UI 이미지도 변경
+                inventoryingredCount[ingreds[index]]++; //GamaManager 인벤토리 재료 카운터에 정보전달
+                mapIngredCount[ingreds[index]]--;//GamaManager 맵 재료 카운터에 정보전달
+                index++;//인벤토리 인덱스 1 증가
+                Debug.Log(index);
+            }
+            else
+            {
+                Debug.Log("인벤토리가 가득 찼습니다.");
+                index = 3;//인덱스 오류 발생 방지용
+            }
         }
 
     }
     public void throwIngrediant()//재료 버리기
     {
-        if(index > 0 && index < 4) //인벤토리 인덱스가 1,2,3일때.
+        if (GameManager.instance.isCasting == false) //음식 제작중엔 안됨
         {
-            index--; //인덱스 감소. 0,1,2번 인덱스에 재료가 들어있다.
-            GameManager.instance.ingredCount[ingreds[index]]--;//재료 카운터에서 재료 제거
-            ingreds[index] = 0;//인벤토리에서 재료 제거
-            InventoryUI[index].sprite = ingrediantSpriteArray[0];//UI에서도 재료 제거
-        }
-        else if (index <= 0)
-        {
-            Debug.Log("인벤토리가 비어있습니다.");
-            index = 0;//인덱스 오류 발생 방지용
-        }
-        else
-        {
-            Debug.Log("인벤토리 오류발생ㅠㅠ");
-            //혹시 몰라서 예외처리
+            if (index > 0 && index < 4) //인벤토리 인덱스가 1,2,3일때.
+            {
+                index--; //인덱스 감소. 0,1,2번 인덱스에 재료가 들어있다.
+                inventoryingredCount[ingreds[index]]--;//재료 카운터에서 재료 제거
+                ingreds[index] = 0;//인벤토리에서 재료 제거
+                InventoryUI[index].sprite = ingrediantSpriteArray[0];//UI에서도 재료 제거
+            }
+            else if (index <= 0)
+            {
+                Debug.Log("인벤토리가 비어있습니다.");
+                index = 0;//인덱스 오류 발생 방지용
+            }
+            else
+            {
+                Debug.Log("인벤토리 오류발생ㅠㅠ");
+                //혹시 몰라서 예외처리
+            }
         }
     }
 
     public void MakeFood()
     {
-        if(index < 3)
+        if (GameManager.instance.isCasting == false) // 음식 제작중엔 안됨
         {
-            Debug.Log("재료가 부족합니다.");
-        }
-        else if(index == 3)
-        {
-            if (GameManager.instance.ingredCount[1] > 0 && GameManager.instance.ingredCount[2] > 0 && GameManager.instance.ingredCount[5] > 0)
+            if (index < 3)
             {
-                Debug.Log("샌드위치 제작 시작");
-                StartCoroutine("MakeSandwich");
+                Debug.Log("재료가 부족합니다.");
             }
-            else if (GameManager.instance.ingredCount[1] > 0 && GameManager.instance.ingredCount[3] > 0 && GameManager.instance.ingredCount[4] > 0)
+            else if (index == 3)
             {
-                Debug.Log("햄버거 제작 시작");
-                StartCoroutine("MakeHamburger");
-            }
-            else if (GameManager.instance.ingredCount[2] > 0 && GameManager.instance.ingredCount[3] > 0 && GameManager.instance.ingredCount[6] > 0)
-            {
-                Debug.Log("피자 제작 시작");
-                StartCoroutine("MakePizza");
+                if (inventoryingredCount[1] > 0 && inventoryingredCount[2] > 0 && inventoryingredCount[5] > 0)
+                {
+                    Debug.Log("샌드위치 제작 시작");
+                    StartCoroutine("MakeSandwich");
+                }
+                else if (inventoryingredCount[1] > 0 && inventoryingredCount[3] > 0 && inventoryingredCount[4] > 0)
+                {
+                    Debug.Log("햄버거 제작 시작");
+                    StartCoroutine("MakeHamburger");
+                }
+                else if (inventoryingredCount[2] > 0 && inventoryingredCount[3] > 0 && inventoryingredCount[6] > 0)
+                {
+                    Debug.Log("피자 제작 시작");
+                    StartCoroutine("MakePizza");
+                }
             }
         }
     }
+
+    public void castedNumberUpdate()
+    {
+        castednumber++;
+        if (castednumber < 10)
+        {
+            castingTime = castingTime - 0.3f;
+        }
+        else if (castednumber >= 10)
+        {
+            castingTime = 2f;
+        }
+        else
+        {
+            Debug.Log("캐스팅 횟수 오류발생");
+        }
+    }
+
+    //아래는 코루틴을 사용해 대기시간이나 쿨타임을 구현하는 방식입니다.
+    //IEnumerator로 함수처럼 내용을 선언하면 됩니다. 
+    //호출은 StartCouroutine("MakeSandwich"); 이런식으로
     IEnumerator MakeSandwich()
     {
-        yield return new WaitForSeconds(5f);
-        GameManager.instance.ingredCount[1]--;
-        GameManager.instance.ingredCount[2]--;
-        GameManager.instance.ingredCount[5]--;
+        GameManager.instance.isCasting = true; // 캐스팅 시작
+        yield return new WaitForSeconds(castingTime); // 캐스팅 시간만큼 대기
+        inventoryingredCount[1]--;
+        inventoryingredCount[2]--;
+        inventoryingredCount[5]--;
+        //인벤토리에서 재료 사용
         Debug.Log("샌드위치 제작 완료");
-        currentfood = Foods.Sandwich;
-        currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Sandwich];
+        currentfood = Foods.Sandwich; //음식 인벤토리에 추가
+        currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Sandwich]; // 음식 UI 변경
+        GameManager.instance.isCasting = false; // 캐스팅 종료
+        castedNumberUpdate();
     }
     IEnumerator MakeHamburger()
     {
-        yield return new WaitForSeconds(5f);
-        GameManager.instance.ingredCount[1]--;
-        GameManager.instance.ingredCount[3]--;
-        GameManager.instance.ingredCount[4]--;
+        GameManager.instance.isCasting = true;
+        yield return new WaitForSeconds(castingTime);
+        inventoryingredCount[1]--;
+        inventoryingredCount[3]--;
+        inventoryingredCount[4]--;
         Debug.Log("햄버거 제작 완료");
         currentfood = Foods.Hamburger;
         currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Hamburger];
+        GameManager.instance.isCasting = false;
+        castedNumberUpdate();
     }
     IEnumerator MakePizza()
     {
-        yield return new WaitForSeconds(5f);
-        GameManager.instance.ingredCount[2]--;
-        GameManager.instance.ingredCount[3]--;
-        GameManager.instance.ingredCount[6]--;
+        GameManager.instance.isCasting = true;
+        yield return new WaitForSeconds(castingTime);
+        inventoryingredCount[2]--;
+        inventoryingredCount[3]--;
+        inventoryingredCount[6]--;
         Debug.Log("피자 제작 완료");
         currentfood = Foods.Pizza;
         currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Pizza];
+        GameManager.instance.isCasting = false;
+        castedNumberUpdate();
     }
+
+    private IEnumerator WaitForGameManager()
+    {
+        yield return new WaitUntil(() => GameManager.instance);
+        //GameManager 인스턴스가 생성되기를 기다립니다.
+
+        inventoryingredCount = GameManager.instance.inventoryIngredCount;
+        //인벤토리 재료 갯수 카운터. GameManager 인스턴스 생성 이후 참조복사
+
+        mapIngredCount = GameManager.instance.mapIngredCount;
+        //맵 재료 갯수 카운터
+
+        castednumber = GameManager.instance.castednumber;
+        //음식 제작된 횟수
+
+        castingTime = GameManager.instance.castingTime;
+        //캐스팅 시간
+}
 }
