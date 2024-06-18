@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,7 +37,7 @@ public class PlayUIManager : MonoBehaviour
         }
         /*중복 생성 방지. GameManager는 모든 씬을 관리하지만, PlayUIManager는 Play 씬만 관리하므로 
         새로운 씬 로딩시 PlayUIManager 파괴되도록 DonotDestroyOnLoad 안씁니다.*/
-        StartCoroutine("WaitForGameManager"); // 게임매니저 생성 대기 후 필요한 참조를 복사해옵니다.
+        StartCoroutine(WaitForGameManager()) ; // 게임매니저 생성 대기 후 필요한 참조를 복사해옵니다.
     }
     public enum Ingrediants //재료 열거형 자료. 코드 가독성 향상용.
     {
@@ -89,7 +90,7 @@ public class PlayUIManager : MonoBehaviour
     //현재 가진 음식 저장용 배열
 
 
-    public void getIngrediant(Ingrediants ingred) 
+    public void getIngrediant(Ingrediants ingred, Vector3 spawnPoint) 
     //재료획득 버튼 누를 시 실행되는 함수.
     {
         if (GameManager.instance.isCasting == false) //음식 제작중엔 안됨
@@ -100,6 +101,24 @@ public class PlayUIManager : MonoBehaviour
                 InventoryUI[index].sprite = ingrediantSpriteArray[ingreds[index]]; //인벤토리 UI 이미지도 변경
                 inventoryingredCount[ingreds[index]]++; //GamaManager 인벤토리 재료 카운터에 정보전달
                 mapIngredCount[ingreds[index]]--;//GamaManager 맵 재료 카운터에 정보전달
+                int pointindex = -1;
+                for (int i = 0; i < IngrediantGenerator.Instance.spawnPoints.Length; i++)
+                {
+                    if (IngrediantGenerator.Instance.spawnPoints[i].Equals(spawnPoint))
+                    {
+                        pointindex = i;
+                        break;
+                    }
+                }
+                if (pointindex == -1)
+                {
+                    Debug.Log("재료 좌표오류");
+                }
+                else
+                {
+                    IngrediantGenerator.Instance.isSpawnPointSelected[pointindex] = false;
+                    //생성 가능한 좌표 목록 업데이트
+                }
                 index++;//인벤토리 인덱스 1 증가
                 Debug.Log(index);
             }
@@ -148,17 +167,17 @@ public class PlayUIManager : MonoBehaviour
                 if (inventoryingredCount[1] > 0 && inventoryingredCount[2] > 0 && inventoryingredCount[5] > 0)
                 {
                     Debug.Log("샌드위치 제작 시작");
-                    StartCoroutine("MakeSandwich");
+                    StartCoroutine(MakeSandwich());
                 }
                 else if (inventoryingredCount[1] > 0 && inventoryingredCount[3] > 0 && inventoryingredCount[4] > 0)
                 {
                     Debug.Log("햄버거 제작 시작");
-                    StartCoroutine("MakeHamburger");
+                    StartCoroutine(MakeHamburger());
                 }
                 else if (inventoryingredCount[2] > 0 && inventoryingredCount[3] > 0 && inventoryingredCount[6] > 0)
                 {
                     Debug.Log("피자 제작 시작");
-                    StartCoroutine("MakePizza");
+                    StartCoroutine(MakePizza());
                 }
             }
         }
@@ -169,11 +188,11 @@ public class PlayUIManager : MonoBehaviour
         castednumber++;
         if (castednumber < 10)
         {
-            castingTime = castingTime - 0.3f;
+            castingTime = castingTime - 0.1f;
         }
         else if (castednumber >= 10)
         {
-            castingTime = 2f;
+            castingTime = 1f;
         }
         else
         {
@@ -191,6 +210,10 @@ public class PlayUIManager : MonoBehaviour
         inventoryingredCount[1]--;
         inventoryingredCount[2]--;
         inventoryingredCount[5]--;
+        for (int i = 0; i < 3; i++) {
+            InventoryUI[i].sprite = ingrediantSpriteArray[0];
+        }
+        index = 0;
         //인벤토리에서 재료 사용
         Debug.Log("샌드위치 제작 완료");
         currentfood = Foods.Sandwich; //음식 인벤토리에 추가
@@ -205,6 +228,11 @@ public class PlayUIManager : MonoBehaviour
         inventoryingredCount[1]--;
         inventoryingredCount[3]--;
         inventoryingredCount[4]--;
+        for (int i = 0; i < 3; i++)
+        {
+            InventoryUI[i].sprite = ingrediantSpriteArray[0];
+        }
+        index = 0;
         Debug.Log("햄버거 제작 완료");
         currentfood = Foods.Hamburger;
         currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Hamburger];
@@ -218,6 +246,11 @@ public class PlayUIManager : MonoBehaviour
         inventoryingredCount[2]--;
         inventoryingredCount[3]--;
         inventoryingredCount[6]--;
+        for (int i = 0; i < 3; i++)
+        {
+            InventoryUI[i].sprite = ingrediantSpriteArray[0];
+        }
+        index = 0;
         Debug.Log("피자 제작 완료");
         currentfood = Foods.Pizza;
         currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Pizza];

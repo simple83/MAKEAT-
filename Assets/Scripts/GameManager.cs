@@ -30,8 +30,9 @@ public class GameManager : MonoBehaviour
     public float runningTime = 0f; //게임 진행 시간
     public int[] inventoryIngredCount = { 0, 0, 0, 0, 0, 0, 0 };//0번은 비워두고, 1부터 빵. 인벤토리 재료 갯수 카운터
     public int[] mapIngredCount       = { 0, 0, 0, 0, 0, 0, 0 };// 맵에 존재하는 재료 카운터
+    public bool[] isSpawnPointSelected = { false, false, false, false, false, false, false, false, false, false };
     public int castednumber = 0; // 음식이 제작된 횟수
-    public float castingTime = 5f; // 캐스팅 시간
+    public float castingTime = 2f; // 캐스팅 시간
     public bool isCasting = false;
     private void Awake()
     {
@@ -55,6 +56,10 @@ public class GameManager : MonoBehaviour
             inventoryIngredCount[i] = 0; // 재료 카운터 배열 초기화
             mapIngredCount[i] = 0; // 맵에 배치된 재료 카운터 배열 초기화
         }
+        for (int i = 0; i< isSpawnPointSelected.Length; i++)
+        {
+            isSpawnPointSelected[i] = false; // 재료 생성가능 좌표 초기화.
+        }
         SceneManager.LoadScene(1); //게임 시작씬으로 넘어가기 (Build setting 가면 씬 번호 있음)
     }
     public void GameOver()//게임 오버시 호출되는 함수
@@ -65,6 +70,10 @@ public class GameManager : MonoBehaviour
         {
             inventoryIngredCount[i] = 0; // 재료 갯수 카운터 초기화
             mapIngredCount[i] = 0; // 맵에 배치된 재료 카운터 배열 초기화
+        }
+        for (int i = 0; i < isSpawnPointSelected.Length; i++)
+        {
+            isSpawnPointSelected[i] = false; // 재료 생성가능 좌표 초기화.
         }
         SceneManager.LoadScene(2); //게임오버 씬으로 전환
     }

@@ -64,30 +64,31 @@ public class CollisionHandler : MonoBehaviour
     {
         if (currentFood != null && GameManager.instance.isCasting == false)
         {
+            Vector3 point = currentFood.transform.position;
             Debug.Log(currentFood.tag + " 획득");
             if(currentFood.tag == "Bread")
             {
-                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Bread);
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Bread, point);
             }
             else if (currentFood.tag == "Tomato")
             {
-                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Tomato);
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Tomato, point);
             }
             else if (currentFood.tag == "Cheese")
             {
-                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Cheese);
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Cheese, point);
             }
             else if (currentFood.tag == "Ham")
             {
-                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Ham);
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Ham, point);
             }
             else if (currentFood.tag == "Cabbage")
             {
-                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Cabbage);
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Cabbage, point);
             }
             else if (currentFood.tag == "Tortilla")
             {
-                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Tortilla);
+                PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Tortilla, point);
             }
             Destroy(currentFood);
             pickupButton.gameObject.SetActive(false);
