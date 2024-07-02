@@ -50,3 +50,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UIBG
+    uniqueID: 3493110849
+    locked: 0
+  - name: UI
+    uniqueID: 3727058177
+    locked: 0
