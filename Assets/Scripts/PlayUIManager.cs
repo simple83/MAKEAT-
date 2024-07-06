@@ -19,7 +19,7 @@ public class PlayUIManager : MonoBehaviour
                 if (instance == null)
                 {
                     Debug.Log("No Singletone instance");
-                    Debug.Log("이거 나오면 망한거지 뭐... ㅋㅋ웃기네요-창현");
+                    Debug.Log("이거 나오면 망한거지 뭐...");
                 }
             }
             return instance;
