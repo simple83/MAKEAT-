@@ -67,6 +67,12 @@ public class PlayUIManager : MonoBehaviour
     public Image currentFoodUI;
     // 음식 인벤토리 UI 이미지 접근용
 
+    public Button[] buttons;
+
+    public EffectSoundManager effectSoundManager;
+
+    public GameObject saturationSlider;
+
     public int[] inventoryingredCount;
     //인벤토리 재료 갯수 카운터. GameManager에 선언된 배열의 참조를 복사해와서 사용합니다.
 
@@ -121,11 +127,34 @@ public class PlayUIManager : MonoBehaviour
                 }
                 index++;//인벤토리 인덱스 1 증가
                 Debug.Log(index);
+                effectSoundManager.PickUpSound(buttons[1].GetComponent<AudioSource>());//버튼 효과음
             }
             else
             {
                 Debug.Log("인벤토리가 가득 찼습니다.");
                 index = 3;//인덱스 오류 발생 방지용
+            }
+            if (index == 3)
+            {
+                ButtonImageChanger buttonImageChanger = buttons[0].GetComponent<ButtonImageChanger>();
+                if (inventoryingredCount[1] > 0 && inventoryingredCount[2] > 0 && inventoryingredCount[5] > 0)
+                {
+                    Debug.Log("샌드위치 제작가능");
+                    buttonImageChanger.ButtonDefault();
+                    currentFoodUI.sprite = foodsSpriteArray[0];
+                }
+                else if (inventoryingredCount[1] > 0 && inventoryingredCount[3] > 0 && inventoryingredCount[4] > 0)
+                {
+                    Debug.Log("햄버거 제작가능");
+                    buttonImageChanger.ButtonDefault();
+                    currentFoodUI.sprite = foodsSpriteArray[0];
+                }
+                else if (inventoryingredCount[2] > 0 && inventoryingredCount[3] > 0 && inventoryingredCount[6] > 0)
+                {
+                    Debug.Log("피자 제작가능");
+                    buttonImageChanger.ButtonDefault();
+                    currentFoodUI.sprite = foodsSpriteArray[0];
+                }
             }
         }
 
@@ -140,6 +169,7 @@ public class PlayUIManager : MonoBehaviour
                 inventoryingredCount[ingreds[index]]--;//재료 카운터에서 재료 제거
                 ingreds[index] = 0;//인벤토리에서 재료 제거
                 InventoryUI[index].sprite = ingrediantSpriteArray[0];//UI에서도 재료 제거
+                effectSoundManager.ThrowSound(buttons[2].GetComponent<AudioSource>());
             }
             else if (index <= 0)
             {
@@ -167,7 +197,7 @@ public class PlayUIManager : MonoBehaviour
                 if (inventoryingredCount[1] > 0 && inventoryingredCount[2] > 0 && inventoryingredCount[5] > 0)
                 {
                     Debug.Log("샌드위치 제작 시작");
-                    StartCoroutine(MakeSandwich());
+                    StartCoroutine(MakeSandwich());             
                 }
                 else if (inventoryingredCount[1] > 0 && inventoryingredCount[3] > 0 && inventoryingredCount[4] > 0)
                 {
@@ -179,10 +209,46 @@ public class PlayUIManager : MonoBehaviour
                     Debug.Log("피자 제작 시작");
                     StartCoroutine(MakePizza());
                 }
+
+                effectSoundManager.MakeFoodSound(buttons[0].GetComponent<AudioSource>()); 
             }
         }
     }
-
+    public void EatFood()
+    {
+        ButtonImageChanger buttonImageChanger = buttons[0].GetComponent<ButtonImageChanger>();
+        if (currentfood == Foods.Sandwich)
+        {
+            Slider slider = saturationSlider.GetComponent<Slider>();
+            slider.value += 20;
+            buttonImageChanger.ButtonDisabled();
+            currentFoodUI.sprite = foodsSpriteArray[0];
+            currentfood = Foods.Empty;
+            effectSoundManager.EatFoodSound(buttons[0].GetComponent<AudioSource>());
+        }
+        else if (currentfood == Foods.Hamburger)
+        {
+            Slider slider = saturationSlider.GetComponent<Slider>();
+            slider.value += 30;
+            buttonImageChanger.ButtonDisabled();
+            currentFoodUI.sprite = foodsSpriteArray[0];
+            currentfood = Foods.Empty;
+            effectSoundManager.EatFoodSound(buttons[0].GetComponent<AudioSource>());
+        }
+        else if (currentfood == Foods.Pizza)
+        {
+            Slider slider = saturationSlider.GetComponent<Slider>();
+            slider.value += 40;
+            buttonImageChanger.ButtonDisabled();
+            currentFoodUI.sprite = foodsSpriteArray[0];
+            currentfood = Foods.Empty;
+            effectSoundManager.EatFoodSound(buttons[0].GetComponent<AudioSource>());
+        }
+        else
+        {
+            Debug.Log("음식없음");
+        }
+    }
     public void castedNumberUpdate()
     {
         castednumber++;
@@ -205,6 +271,8 @@ public class PlayUIManager : MonoBehaviour
     //호출은 StartCouroutine("MakeSandwich"); 이런식으로
     IEnumerator MakeSandwich()
     {
+        ButtonImageChanger buttonImageChanger = buttons[0].GetComponent<ButtonImageChanger>();
+        buttonImageChanger.ButtongWorking();
         GameManager.instance.isCasting = true; // 캐스팅 시작
         yield return new WaitForSeconds(castingTime); // 캐스팅 시간만큼 대기
         inventoryingredCount[1]--;
@@ -216,13 +284,17 @@ public class PlayUIManager : MonoBehaviour
         index = 0;
         //인벤토리에서 재료 사용
         Debug.Log("샌드위치 제작 완료");
+        buttonImageChanger.ButtonDefault();
         currentfood = Foods.Sandwich; //음식 인벤토리에 추가
         currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Sandwich]; // 음식 UI 변경
         GameManager.instance.isCasting = false; // 캐스팅 종료
         castedNumberUpdate();
+        effectSoundManager.MakeFoodSound(buttons[0].GetComponent<AudioSource>());
     }
     IEnumerator MakeHamburger()
     {
+        ButtonImageChanger buttonImageChanger = buttons[0].GetComponent<ButtonImageChanger>();
+        buttonImageChanger.ButtongWorking();
         GameManager.instance.isCasting = true;
         yield return new WaitForSeconds(castingTime);
         inventoryingredCount[1]--;
@@ -234,13 +306,17 @@ public class PlayUIManager : MonoBehaviour
         }
         index = 0;
         Debug.Log("햄버거 제작 완료");
+        buttonImageChanger.ButtonDefault();
         currentfood = Foods.Hamburger;
         currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Hamburger];
         GameManager.instance.isCasting = false;
         castedNumberUpdate();
+        effectSoundManager.MakeFoodSound(buttons[0].GetComponent<AudioSource>());
     }
     IEnumerator MakePizza()
     {
+        ButtonImageChanger buttonImageChanger = buttons[0].GetComponent<ButtonImageChanger>();
+        buttonImageChanger.ButtongWorking();
         GameManager.instance.isCasting = true;
         yield return new WaitForSeconds(castingTime);
         inventoryingredCount[2]--;
@@ -252,10 +328,12 @@ public class PlayUIManager : MonoBehaviour
         }
         index = 0;
         Debug.Log("피자 제작 완료");
+        buttonImageChanger.ButtonDefault();
         currentfood = Foods.Pizza;
         currentFoodUI.sprite = foodsSpriteArray[(int)Foods.Pizza];
         GameManager.instance.isCasting = false;
         castedNumberUpdate();
+        effectSoundManager.MakeFoodSound(buttons[0].GetComponent<AudioSource>());
     }
 
     private IEnumerator WaitForGameManager()

@@ -194,7 +194,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MAKEAT_on
+      name: MAKEAT_Clicked
       rect:
         serializedVersion: 2
         x: 12766
@@ -203,7 +203,7 @@ TextureImporter:
         height: 1840
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 4, z: 11, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -383,7 +383,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MAKEAT_off
+      name: MAKEAT_Default
       rect:
         serializedVersion: 2
         x: 7204
@@ -404,7 +404,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MAKEAT_ex
+      name: MAKEAT_Disabled
       rect:
         serializedVersion: 2
         x: 10179
@@ -425,13 +425,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: MAKEAT_onclick
+      name: MAKEAT_Working
       rect:
         serializedVersion: 2
-        x: 12470
-        y: 0
-        width: 2002
-        height: 2010
+        x: 12582
+        y: 127
+        width: 1790
+        height: 1886
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -454,7 +454,7 @@ TextureImporter:
         width: 1073
         height: 1055
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -484,10 +484,10 @@ TextureImporter:
       MAKEAT UI_0: -1760763467
       MAKEAT UI_1: 1935916666
       MAKEAT UI_16: -999039045
-      MAKEAT_ex: -1209432107
-      MAKEAT_off: -394598722
-      MAKEAT_on: 297126531
-      MAKEAT_onclick: -625232639
+      MAKEAT_Clicked: 297126531
+      MAKEAT_Default: -394598722
+      MAKEAT_Disabled: -1209432107
+      MAKEAT_Working: -625232639
       Pick_off: -686080999
       Pick_on: 1278552067
       RightArrow: 2016717697
