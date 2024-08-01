@@ -16,6 +16,11 @@ public class PlayerController : MonoBehaviour
 
     public Rigidbody2D playerRigidbody;
 
+    void Start()
+    {
+        // Rigidbody2D 컴포넌트를 할당
+        playerRigidbody = GetComponent<Rigidbody2D>();
+    }
     void Update()
     {
         if (GameManager.instance.isCasting == false) 

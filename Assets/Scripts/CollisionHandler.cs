@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,8 @@ public class CollisionHandler : MonoBehaviour
             isfood = true;
             Debug.Log("Bread 접촉");
         }
-        else if (other.CompareTag("Tomato")) {
+        else if (other.CompareTag("Tomato"))
+        {
             isfood = true;
             Debug.Log("Tomato 접촉");
         }
@@ -48,6 +50,12 @@ public class CollisionHandler : MonoBehaviour
             Debug.Log("재료획득 버튼 활성화");
             pickupButton.gameObject.SetActive(true);
         }
+
+
+        if (other.CompareTag("Fall")) //낙사
+        {
+            GameManager.instance.GameOver();//게임오버 함수 호출
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -66,7 +74,7 @@ public class CollisionHandler : MonoBehaviour
         {
             Vector3 point = currentFood.transform.position;
             Debug.Log(currentFood.tag + " 획득");
-            if(currentFood.tag == "Bread")
+            if (currentFood.tag == "Bread")
             {
                 PlayUIManager.instance.getIngrediant(PlayUIManager.Ingrediants.Bread, point);
             }
@@ -96,6 +104,14 @@ public class CollisionHandler : MonoBehaviour
         else
         {
             Debug.Log("음식 재료가 null 입니다.");
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D other) //낙사
+    {
+        if (other.gameObject.CompareTag("Fall")) //Fall(낙사) tag 오브젝트와 충돌시 호출
+        {
+            GameManager.instance.GameOver();//게임오버 함수 호출
         }
     }
 }
