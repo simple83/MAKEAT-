@@ -13,6 +13,7 @@ TagManager:
   - Tortilla
   - Ground
   - DeathZone
+  - Fall
   layers:
   - Default
   - TransparentFX
