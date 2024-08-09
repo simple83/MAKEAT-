@@ -9,6 +9,9 @@ public class CollisionHandler : MonoBehaviour
     public Button pickupButton;
     PlayUIManager playUImanager;
     private GameObject currentFood;
+    public float deathTime = 3.0f; // 플레이어가 사망하는데 걸리는 시간
+    private GameObject DeathZoneObject; // 플레이어가 체류된 DeathZone 오브젝트를 저장하기 위한 변수
+    static private float timer = 0f;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -56,6 +59,12 @@ public class CollisionHandler : MonoBehaviour
         {
             GameManager.instance.GameOver();//게임오버 함수 호출
         }
+
+        if (other.CompareTag("DeathZone"))
+        {
+            DeathZoneObject = other.gameObject;// 감지된 데스존 오브젝트 저장
+            Debug.Log("DeathZone 접촉");
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -65,6 +74,13 @@ public class CollisionHandler : MonoBehaviour
             currentFood = null;
             Debug.Log("재료획득 버튼 비활성화");
             pickupButton.gameObject.SetActive(false);
+        }
+
+        if (other.CompareTag("DeathZone"))
+        {
+            DeathZoneObject = null; // 플레이어 오브젝트 초기화
+            timer = 0f; // 타이머 초기화
+            Debug.Log("DeathZone 해제");
         }
     }
 
@@ -107,11 +123,26 @@ public class CollisionHandler : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        //데스존 사망 트리거
+        if (DeathZoneObject != null) // 저장된 데스존 오브젝트가 있을 때만 실행
+        {
+            timer += Time.deltaTime; // 머문 시간 측정
+            if (timer >= deathTime)
+            {
+                GameManager.instance.GameOver(); //게임오버 함수 호출
+                Debug.Log("Player Wasted");
+            }
+        }
+    }
     void OnCollisionEnter2D(Collision2D other) //낙사
     {
         if (other.gameObject.CompareTag("Fall")) //Fall(낙사) tag 오브젝트와 충돌시 호출
         {
             GameManager.instance.GameOver();//게임오버 함수 호출
+
+            Debug.Log("Player 낙사");
         }
     }
 }
