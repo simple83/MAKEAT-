@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5301353713435565394}
   - component: {fileID: 215073009399463978}
   - component: {fileID: 4090273718725873838}
-  - component: {fileID: 6701658809819583379}
   m_Layer: 0
   m_Name: DeathZone
   m_TagString: DeathZone
@@ -135,18 +134,6 @@ PolygonCollider2D:
       - {x: -0.5, y: -0.28866667}
       - {x: 0.5, y: -0.28866667}
   m_UseDelaunayMesh: 0
---- !u!114 &6701658809819583379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 85684735576998097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f1ee953a61f3a04c85825f8a928cae7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1324936604328001035
 GameObject:
   m_ObjectHideFlags: 0

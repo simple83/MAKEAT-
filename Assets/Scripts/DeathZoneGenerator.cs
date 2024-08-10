@@ -26,7 +26,51 @@ public class DeathZoneGenerator : MonoBehaviour
                 fixedYPosition
             );
 
-            Instantiate(deathZonePrefab, spawnPosition, Quaternion.identity);
+            // DeathZone을 생성하고, DeathZoneController 기능을 수행할 컴포넌트 추가
+            GameObject deathZone = Instantiate(deathZonePrefab, spawnPosition, Quaternion.identity);
+            deathZone.AddComponent<DeathZoneController>(); // DeathZoneController 기능을 컴포넌트로 추가
         }
+    }
+}
+
+public class DeathZoneController : MonoBehaviour
+{
+    private bool playerDetected = false; // 플레이어가 감지되었는지 여부
+    private Coroutine destructionCoroutine; // 소멸 코루틴을 관리하기 위한 변수
+
+    private void Start()
+    {
+        // 플레이어가 감지되지 않았을 경우 5초 후에 소멸
+        destructionCoroutine = StartCoroutine(DestroyAfterTime(5.0f));
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerDetected = true; // 플레이어 감지
+            if (destructionCoroutine != null)
+            {
+                StopCoroutine(destructionCoroutine); // 기존 소멸 코루틴 중지
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if (playerDetected)
+            {
+                // 플레이어가 떠난 후 2초 후에 소멸
+                StartCoroutine(DestroyAfterTime(2.0f));
+            }
+        }
+    }
+
+    private IEnumerator DestroyAfterTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+        Destroy(gameObject); // 오브젝트 소멸
     }
 }

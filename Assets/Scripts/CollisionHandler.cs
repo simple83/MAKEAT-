@@ -11,6 +11,7 @@ public class CollisionHandler : MonoBehaviour
     private GameObject currentFood;
     public float deathTime = 3.0f; // 플레이어가 사망하는데 걸리는 시간
     private GameObject DeathZoneObject; // 플레이어가 체류된 DeathZone 오브젝트를 저장하기 위한 변수
+    private GameObject HideZoneObject; // 플레이어가 체류된 HideZone 오브젝트를 저장하기 위한 변수
     static private float timer = 0f;
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -55,15 +56,16 @@ public class CollisionHandler : MonoBehaviour
         }
 
 
-        if (other.CompareTag("Fall")) //낙사
-        {
-            GameManager.instance.GameOver();//게임오버 함수 호출
-        }
-
         if (other.CompareTag("DeathZone"))
         {
-            DeathZoneObject = other.gameObject;// 감지된 데스존 오브젝트 저장
+            DeathZoneObject = other.gameObject; // 감지된 데스존 오브젝트 저장
             Debug.Log("DeathZone 접촉");
+        }
+
+        if (other.CompareTag("HideZone"))
+        {
+            HideZoneObject = other.gameObject; // 감지된 HideZone 오브젝트 저장
+            Debug.Log("HideZone 접촉");
         }
     }
 
@@ -81,6 +83,29 @@ public class CollisionHandler : MonoBehaviour
             DeathZoneObject = null; // 플레이어 오브젝트 초기화
             timer = 0f; // 타이머 초기화
             Debug.Log("DeathZone 해제");
+        }
+
+        if (other.CompareTag("HideZone"))
+        {
+            HideZoneObject = null; // 플레이어 오브젝트 초기화
+            Debug.Log("HideZone 해제");
+        }
+    }
+
+    private void Update()
+    {
+        // DeathZone 사망 트리거
+        if (DeathZoneObject != null && HideZoneObject == null) // HideZone에 있지 않을 때만 실행
+        {
+            timer += Time.deltaTime; // 머문 시간 측정
+            if (timer >= deathTime)
+            {
+                if (DeathZoneObject != null)
+                {
+                    GameManager.instance.GameOver(); // 게임오버 함수 호출
+                    Debug.Log("Player Wasted");
+                }
+            }
         }
     }
 
@@ -123,25 +148,11 @@ public class CollisionHandler : MonoBehaviour
         }
     }
 
-    private void Update()
+    void OnCollisionEnter2D(Collision2D other) // 낙사
     {
-        //데스존 사망 트리거
-        if (DeathZoneObject != null) // 저장된 데스존 오브젝트가 있을 때만 실행
+        if (other.gameObject.CompareTag("Fall")) // Fall(낙사) tag 오브젝트와 충돌시 호출
         {
-            timer += Time.deltaTime; // 머문 시간 측정
-            if (timer >= deathTime)
-            {
-                GameManager.instance.GameOver(); //게임오버 함수 호출
-                Debug.Log("Player Wasted");
-            }
-        }
-    }
-    void OnCollisionEnter2D(Collision2D other) //낙사
-    {
-        if (other.gameObject.CompareTag("Fall")) //Fall(낙사) tag 오브젝트와 충돌시 호출
-        {
-            GameManager.instance.GameOver();//게임오버 함수 호출
-
+            GameManager.instance.GameOver(); // 게임오버 함수 호출
             Debug.Log("Player 낙사");
         }
     }
